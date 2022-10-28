@@ -1,7 +1,7 @@
-import {createSlice} from "@reduxjs/toolkit";
-import {Person} from "@/models/people";
-import {TypesLocalstorage} from "@/models/localstorage";
-import {getPeopleLocalStorage, setFavoritePeopleLocalStorage} from "@/utilities/localstorage.utility";
+import { createSlice } from "@reduxjs/toolkit";
+import { Person } from "@/models/people";
+import { TypesLocalstorage } from "@/models/localstorage";
+import { getPeopleLocalStorage, setFavoritePeopleLocalStorage } from "@/utilities/localstorage.utility";
 
 const initialState: Person[] = [];
 
@@ -18,3 +18,6 @@ export const favoritePeople = createSlice({
        }
    }
 });
+
+export const { addFavoritePeople } = favoritePeople.actions;
+export default favoritePeople.reducer;

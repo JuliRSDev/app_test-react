@@ -1,10 +1,16 @@
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid';
 import { People } from "@/data/people";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Person } from "@/models/people";
 import { Checkbox } from "@mui/material";
+import { useDispatch } from 'react-redux'
+import { addFavoritePeople } from "@/redux/state/favoritePeople";
+import {addPeople} from "@/redux/state/people";
+import {store} from "@/redux/store";
 
 export const Home = () => {
+    const dispatch = useDispatch();
+
     const [ selectedPeople, setSelectedPeople ] = useState<Person[]>([]);
     const pageSizes = 5;
 
@@ -12,7 +18,9 @@ export const Home = () => {
     const filterPerson = ( person: Person ) => selectedPeople.filter( p => p.id !== person.id );
 
     const handleChange = ( person: Person ) => {
-        setSelectedPeople( findPerson( person ) ? filterPerson( person ) : [ ...selectedPeople, person ] );
+        const filterPeople = findPerson( person ) ? filterPerson( person ) : [ ...selectedPeople, person ];
+        setSelectedPeople( filterPeople );
+        dispatch( addFavoritePeople( filterPeople ) );
     }
 
     const columns = [
@@ -24,7 +32,6 @@ export const Home = () => {
             width: 50,
             renderCell: ( params: GridRenderCellParams ) => (
                 <>
-                    {/* !! = con esto transformamos la resolución de este metodo en un true o false */}
                     <Checkbox size="small"
                               checked={ findPerson( params.row ) }
                               onChange={ () => handleChange( params.row ) }
@@ -55,10 +62,14 @@ export const Home = () => {
         }
     ]
 
+    useEffect( () => {
+        dispatch( addPeople( People ) );
+    }, [] );
+
     return(
         <DataGrid
             columns={ columns }
-            rows={ People }
+            rows={ store.getState().people }
             disableColumnSelector
             disableSelectionOnClick
             autoHeight
