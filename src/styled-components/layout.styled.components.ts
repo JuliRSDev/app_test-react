@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const LayoutContainer = styled.div`
-   width: 90vw;
+   width: 65vw;
   
    @media only screen and ( max-width: 1176px ) {
      padding: 12px;
