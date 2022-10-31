@@ -1,28 +1,18 @@
-import {useDispatch, useSelector} from "react-redux";
-import {AppStore} from "@/redux/store";
-import {useEffect, useState} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppStore } from "@/redux/store";
+import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
+import DeleteIcon from '@mui/icons-material/Delete';
 import {Person} from "@/models/people";
-import {addFavoritePeople} from "@/redux/state/favoritePeople";
-import {DataGrid, GridRenderCellParams} from "@mui/x-data-grid";
-import {Checkbox} from "@mui/material";
+import {removeFavoritePeople} from "@/redux/state/favoritePeople";
 
-export const PeopleTable = () => {
+export const FavoriteTable = () => {
 
     const dispatch = useDispatch();
     const pageSizes = 5;
 
-    const statePeople = useSelector( ( store: AppStore ) => store.people );
-    const favoritePeople = useSelector( ( store: AppStore ) => store.favorites );
-    const [ selectedPeople, setSelectedPeople ] = useState<Person[]>([]);
+    const stateFavorites = useSelector( ( store: AppStore ) => store.favorites );
 
-    const findPerson = ( person: Person ) => !!favoritePeople.find( p => p.id === person.id );
-    const filterPerson = ( person: Person ) => favoritePeople.filter( p => p.id !== person.id );
-
-    const handleChange = ( person: Person ) => {
-        const filterPeople = findPerson( person ) ? filterPerson( person ) : [ ...selectedPeople, person ];
-        setSelectedPeople( filterPeople );
-        dispatch( addFavoritePeople( filterPeople ) );
-    }
+    const handleClick = ( people: Person ) => dispatch( removeFavoritePeople( people ) );
 
     const columns = [
         {
@@ -33,10 +23,7 @@ export const PeopleTable = () => {
             width: 50,
             renderCell: ( params: GridRenderCellParams ) => (
                 <>
-                    <Checkbox size="small"
-                              checked={ findPerson( params.row ) }
-                              onChange={ () => handleChange( params.row ) }
-                    />
+                    <DeleteIcon color='error' onClick={ () => handleClick( params.row ) } />
                 </>
             )
         },
@@ -70,13 +57,9 @@ export const PeopleTable = () => {
         }
     ]
 
-    useEffect( () => {
-        setSelectedPeople(favoritePeople);
-    }, [ favoritePeople ] );
-
     return(
         <DataGrid
-            rows={ statePeople }
+            rows={ stateFavorites }
             columns={ columns }
             disableColumnSelector
             disableSelectionOnClick

@@ -13,10 +13,16 @@ export const favoritePeople = createSlice({
    reducers: {
 
        addFavoritePeople: ( state, action ) => {
-           setFavoritePeopleLocalStorage( TypesLocalstorage.FAVORITES, state );
+           setFavoritePeopleLocalStorage( TypesLocalstorage.FAVORITES, action.payload );
            return action.payload;
+       },
+
+       removeFavoritePeople: ( state, action ) => {
+           const filteredState = state.filter( ( p: Person ) => p.id !== action.payload.id );
+           setFavoritePeopleLocalStorage( TypesLocalstorage.FAVORITES, filteredState );
+           return filteredState;
        }
    }
 });
 
-export const { addFavoritePeople } = favoritePeople.actions;
+export const { addFavoritePeople, removeFavoritePeople } = favoritePeople.actions;
